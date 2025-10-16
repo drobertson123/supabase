@@ -98,16 +98,27 @@ export const RealtimeSettings = () => {
     allow_public: z.boolean(),
   })
 
+  // [Joshen] Doing this as a fallback as certain projects with existing realtime settings had some of the fields (edge case)
+  // as null (e.g max_events_per_second), which resulted in the form not validating when saving while suspend is true (and fields are hidden)
+  const defaultValues = {
+    suspend: data?.suspend ?? REALTIME_DEFAULT_CONFIG.suspend,
+    allow_public: !(data?.private_only ?? REALTIME_DEFAULT_CONFIG.private_only),
+    connection_pool: data?.connection_pool ?? REALTIME_DEFAULT_CONFIG.connection_pool,
+    max_events_per_second:
+      data?.max_events_per_second ?? REALTIME_DEFAULT_CONFIG.max_events_per_second,
+    max_concurrent_users:
+      data?.max_concurrent_users ?? REALTIME_DEFAULT_CONFIG.max_concurrent_users,
+    max_presence_events_per_second:
+      data?.max_presence_events_per_second ??
+      REALTIME_DEFAULT_CONFIG.max_presence_events_per_second,
+    max_payload_size_in_kb:
+      data?.max_payload_size_in_kb ?? REALTIME_DEFAULT_CONFIG.max_payload_size_in_kb,
+  }
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
-    defaultValues: {
-      ...REALTIME_DEFAULT_CONFIG,
-      allow_public: !REALTIME_DEFAULT_CONFIG.private_only,
-    },
-    values: {
-      ...(data ?? REALTIME_DEFAULT_CONFIG),
-      allow_public: !(data?.private_only ?? REALTIME_DEFAULT_CONFIG.private_only),
-    } as any,
+    defaultValues,
+    values: defaultValues,
   })
 
   const { allow_public, suspend } = form.watch()
