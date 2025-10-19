@@ -6,22 +6,21 @@ services:
       context: ..
       dockerfile: apps/studio/Dockerfile
       target: dev
-    ports:
-      - 8082:8082
+    # Host port mapping removed; use Traefik or docker network to access the service
   mail:
     container_name: supabase-mail
     image: inbucket/inbucket:3.0.3
-    ports:
-      - '2500:2500' # SMTP
-      - '9000:9000' # web interface
-      - '1100:1100' # POP3
+    # Host port mappings removed; use a local override if direct host access is required
+    # ports:
+    #   - '2500:2500' # SMTP
+    #   - '9000:9000' # web interface
+    #   - '1100:1100' # POP3
   auth:
     environment:
       - GOTRUE_SMTP_USER=
       - GOTRUE_SMTP_PASS=
   meta:
-    ports:
-      - 5555:8080
+    # Host port mapping removed; use Traefik or docker network to access the service
   db:
     restart: 'no'
     volumes:

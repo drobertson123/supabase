@@ -3,8 +3,7 @@ version: '3'
 services:
   payload:
     image: node:18-alpine
-    ports:
-      - '3030:3030'
+    # Host port mapping removed; service should be exposed via Traefik or an override
     volumes:
       - .:/home/node/app
       - node_modules:/home/node/app/node_modules
@@ -21,10 +20,9 @@ services:
     image: postgres:latest
     volumes:
       - pgdata:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
+    # Host port mapping removed; Postgres will be available on the docker network
 
 volumes:
   data:
-  # pgdata:
+    pgdata:
   node_modules:
